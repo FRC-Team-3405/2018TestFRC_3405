@@ -1,26 +1,9 @@
 package frc.team3405.robot
-import edu.wpi.first.wpilibj.IterativeRobot
+import frc.team3405.robot.subsystems.DriveTrain
 import lib.BaseRobot
-import lib.command
-import lib.subsystem
 
-class Robot : BaseRobot({
-
-
-
-    val driveCommand = command {
-        fun x() {}
+class Robot : BaseRobot() {
+    companion object {
+        val driveTrain = DriveTrain
     }
-
-    val mySubsystem = subsystem(driveCommand) {  }
-
-
-
-    onInit {
-
-    }
-
-    disabled {
-
-    }
-})
+}

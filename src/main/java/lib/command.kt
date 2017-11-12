@@ -7,7 +7,7 @@ import edu.wpi.first.wpilibj.command.Command
  */
 
 
-class BaseCommand(var finished: Boolean = true, private val _command: BaseCommand.() -> Unit = {}) : Command() {
+open class BaseCommand(var finished: Boolean = true, private val _command: BaseCommand.() -> Unit = {}) : Command() {
 
     override fun isFinished(): Boolean {
         return finished
