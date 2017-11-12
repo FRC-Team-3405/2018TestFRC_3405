@@ -1,4 +1,4 @@
-package lib.maps
+package frc.team3405.robot.lib.maps
 
 /**
  * Created by ryanberger on 11/11/17.

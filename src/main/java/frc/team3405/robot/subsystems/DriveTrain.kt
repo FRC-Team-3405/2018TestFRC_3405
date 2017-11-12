@@ -2,8 +2,9 @@ package frc.team3405.robot.subsystems
 
 import com.ctre.MotorControl.CANTalon
 import frc.team3405.robot.commands.DriveCommand
-import lib.BaseSubSystem
-import lib.Controller
+import frc.team3405.robot.lib.BaseCommand
+import frc.team3405.robot.lib.BaseSubSystem
+import frc.team3405.robot.lib.Controller
 
 /**
  * Created by ryanberger on 11/11/17.
@@ -11,7 +12,9 @@ import lib.Controller
 
 
 const val DEADZONE = .2
-object DriveTrain : BaseSubSystem(DriveCommand()) {
+object DriveTrain : BaseSubSystem() {
+    override val command: BaseCommand? = DriveCommand()
+
     private val frontRight: CANTalon = CANTalon(0)
     private val frontLeft: CANTalon = CANTalon(1)
     private val backLeft: CANTalon = CANTalon(2)

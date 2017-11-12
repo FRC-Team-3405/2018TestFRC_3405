@@ -1,8 +1,8 @@
-package lib
+package frc.team3405.robot.lib
 
 import edu.wpi.first.wpilibj.Joystick
 import edu.wpi.first.wpilibj.buttons.JoystickButton
-import lib.maps.Xbox
+import frc.team3405.robot.lib.maps.Xbox
 
 /**
  * Created by ryanberger on 11/11/17.
@@ -63,11 +63,11 @@ data class Binding(val buttonPort: Int) {
 }
 
 class ControllerBuilder {
-    lateinit var joystick: Joystick
+    var port: Int = 0
     val exit: MutableList<Binding> = mutableListOf()
     val once: Int = 0
     fun build(): Controller {
-        return Controller(joystick, exit)
+        return Controller(Joystick(port), exit)
     }
 }
 
