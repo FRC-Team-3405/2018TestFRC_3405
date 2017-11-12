@@ -10,7 +10,7 @@ import lib.BaseCommand
  * Created by ryanberger on 11/11/17.
  */
 
-class DriveCommand : BaseCommand() {
+class DriveCommand : BaseCommand(finished = false) {
     init {
         requires(Robot.driveTrain)
     }
