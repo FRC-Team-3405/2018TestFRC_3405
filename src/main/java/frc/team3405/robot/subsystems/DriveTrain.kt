@@ -43,12 +43,12 @@ class Drive(private val frontRight: CANTalon,
         val right: Double = (y - x) * maxOutput
 
 
-        if (right outsidePlusOrMinus .2) {
+        if (right outsidePlusOrMinus DEADZONE) {
             frontRight.set(right)
             backRight.set(right)
         }
 
-        if (left outsidePlusOrMinus .2) {
+        if (left outsidePlusOrMinus DEADZONE) {
             frontLeft.set(left)
             backLeft.set(left)
         }
