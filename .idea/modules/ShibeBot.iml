@@ -76,5 +76,8 @@
     <orderEntry type="library" scope="RUNTIME" name="Gradle: edu.wpi.first.wpilib.networktables.java:NetworkTables:3.1.7:desktop" level="project" />
     <orderEntry type="library" scope="RUNTIME" name="Gradle: edu.wpi.first.wpilib.networktables.java:NetworkTables:3.1.7:arm" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Gradle: edu.wpi.first.wpilib.networktables.java:NetworkTables:3.1.7:desktop" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Gradle: org.jetbrains.kotlinx:kotlinx-coroutines-core:0.19.3" level="project" />
+    <orderEntry type="library" scope="RUNTIME" name="Gradle: org.jetbrains.kotlinx:kotlinx-coroutines-core:0.19.3" level="project" />
+    <orderEntry type="library" scope="TEST" name="Gradle: org.jetbrains.kotlinx:kotlinx-coroutines-core:0.19.3" level="project" />
   </component>
 </module>

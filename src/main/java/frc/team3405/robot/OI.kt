@@ -10,6 +10,5 @@ import frc.team3405.robot.lib.maps.Xbox
 object OI {
     val controller = controller {
         port = 0
-        once the Xbox.AButton recieves State.PRESSED run command { } and exit
     }
 }

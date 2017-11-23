@@ -4,6 +4,10 @@ import frc.team3405.robot.lib.BaseRobot
 
 class Robot : BaseRobot() {
     companion object {
-        val driveTrain = DriveTrain
+        lateinit var driveTrain: DriveTrain
+    }
+
+    override fun operatorControl() {
+        driveTrain = DriveTrain
     }
 }

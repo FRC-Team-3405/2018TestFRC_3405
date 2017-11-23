@@ -6,11 +6,10 @@ import edu.wpi.first.wpilibj.command.Subsystem
  * Created by ryanberger on 11/3/17.
  */
 
-abstract class BaseSubSystem: Subsystem() {
-    open val command: BaseCommand? = null
+abstract class BaseSubSystem(name: String, val command: BaseCommand? = null): Subsystem(name) {
     override fun initDefaultCommand() {
         command?.let {
-            defaultCommand = it
+            defaultCommand = command
         }
     }
 }
