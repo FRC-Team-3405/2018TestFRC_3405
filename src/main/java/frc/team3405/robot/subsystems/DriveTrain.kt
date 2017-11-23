@@ -21,7 +21,6 @@ object DriveTrain : BaseSubSystem("drivetrain") {
     private val backRight: CANTalon = CANTalon(3)
     const val maxOutput = 1
 
-    val driveSystem by lazy { Drive(frontRight, frontLeft, backRight, backLeft) }
 
     fun arcadeDrive(controller: Controller) {
         val x = controller.leftX
@@ -50,41 +49,4 @@ object DriveTrain : BaseSubSystem("drivetrain") {
 
 infix fun Double.outsidePlusOrMinus(double: Double): Boolean {
     return double >= .2 && double <= -.2
-}
-
-
-class Drive(private val frontRight: CANTalon,
-            private val frontLeft: CANTalon,
-            private val backRight: CANTalon, private val backLeft: CANTalon) {
-    var maxOutput = 1
-
-    fun arcadeDrive(x: Double, y: Double) {
-        val left: Double = (y + x) * maxOutput
-        val right: Double = (y - x) * maxOutput
-
-        print(right)
-        print(left)
-
-        frontRight.set(right)
-        backRight.set(-right)
-
-//        frontLeft.set(left)
-//        backLeft.set(left)
-
-        if (right outsidePlusOrMinus DEADZONE) {
-            print("Yes")
-        }
-
-        if (left outsidePlusOrMinus DEADZONE) {
-            print("Yes")
-        }
-    }
-
-    fun tankDrive(x: Double, y: Double) {
-
-    }
-
-
-    fun driveDistance(distance: Double) {}
-
 }
