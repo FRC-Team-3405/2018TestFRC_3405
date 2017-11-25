@@ -2,8 +2,9 @@ package frc.team3405.robot.subsystems
 
 import com.ctre.MotorControl.CANTalon
 import frc.team3405.robot.OI
-import frc.team3405.robot.lib.BaseSubSystem
+import frc.team3405.robot.lib.BaseSubsystem
 import frc.team3405.robot.lib.Controller
+import frc.team3405.robot.lib.loopmanager.LifeCycleLoop
 import kotlinx.coroutines.experimental.async
 import kotlinx.coroutines.experimental.delay
 
@@ -13,7 +14,7 @@ import kotlinx.coroutines.experimental.delay
 
 
 const val DEADZONE = .2
-object DriveTrain : BaseSubSystem("drivetrain") {
+object DriveTrain : BaseSubsystem("drivetrain") {
 
     private val frontRight: CANTalon = CANTalon(0)
     private val frontLeft: CANTalon = CANTalon(1)
@@ -21,8 +22,14 @@ object DriveTrain : BaseSubSystem("drivetrain") {
     private val backRight: CANTalon = CANTalon(3)
     const val maxOutput = 1
 
+    override val loop: LifeCycleLoop = (object: LifeCycleLoop() {
+        override val onTeleop: suspend () -> Unit = {
 
-    fun arcadeDrive(controller: Controller) {
+        }
+    })
+
+
+    private fun arcadeDrive(controller: Controller) {
         val x = controller.leftX
         val y = controller.leftY
         val left: Double = (y + x) * maxOutput
@@ -34,19 +41,4 @@ object DriveTrain : BaseSubSystem("drivetrain") {
         frontLeft.set(-left)
         backLeft.set(left)
     }
-
-    init {
-        print("Hello")
-        async {
-            while (true) {
-                arcadeDrive(OI.controller)
-                delay(100)
-            }
-        }
-    }
-}
-
-
-infix fun Double.outsidePlusOrMinus(double: Double): Boolean {
-    return double >= .2 && double <= -.2
 }

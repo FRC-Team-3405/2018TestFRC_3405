@@ -8,7 +8,5 @@ import frc.team3405.robot.lib.maps.Xbox
  */
 
 object OI {
-    val controller = controller {
-        port = 0
-    }
+
 }

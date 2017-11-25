@@ -16,7 +16,14 @@ enum class State {
     TOGGLE_PRESSED
 }
 
-class Controller(private val joystick: Joystick, bindings: List<Binding>) {
+// We will need a base controller that will allow us to create the bindings,
+// and control all of our co-routines
+
+// Extra logic such as getting the axes will done in the subclass so that we can
+// maintain a minimal abstraction of our controller
+
+
+class Controller(private val joystick: Joystick) {
     val rightX
     get() = joystick.getRawAxis(Xbox.RightX)
 
@@ -37,59 +44,59 @@ class Controller(private val joystick: Joystick, bindings: List<Binding>) {
 
 
     init {
-        bind(bindings)
+//        bind(bindings)
     }
 
-    private fun bind(bindings: List<Binding>) {
-        for (binding in bindings) {
-            // Get the port number
-            JoystickButton(joystick, binding.buttonPort).apply {
-                when(binding.state) {
-                    State.ACTIVE -> whenActive(binding.command)
-                    State.INACTIVE -> whenInactive(binding.command)
-                    State.PRESSED -> whenPressed(binding.command)
-                    State.RELEASED -> whenReleased(binding.command)
-                    State.TOGGLE_PRESSED -> toggleWhenPressed(binding.command)
-                }
-            }
-        }
-    }
+//    private fun bind(bindings: List<Binding>) {
+//        for (binding in bindings) {
+//            // Get the port number
+//            JoystickButton(joystick, binding.buttonPort).apply {
+//                when(binding.state) {
+//                    State.ACTIVE -> whenActive(binding.command)
+//                    State.INACTIVE -> whenInactive(binding.command)
+//                    State.PRESSED -> whenPressed(binding.command)
+//                    State.RELEASED -> whenReleased(binding.command)
+//                    State.TOGGLE_PRESSED -> toggleWhenPressed(binding.command)
+//                }
+//            }
+//        }
+//    }
 }
 
 
-data class Binding(val buttonPort: Int) {
-    lateinit var command: BaseCommand
-    lateinit var state: State
-}
+//data class Binding(val buttonPort: Int) {
+//    lateinit var command: BaseCommand
+//    lateinit var state: State
+//}
+//
+//class ControllerBuilder {
+//    var port: Int = 0
+//    val exit: MutableList<Binding> = mutableListOf()
+//    val once: Int = 0
+//    fun build(): Controller {
+//        return Controller(Joystick(port), exit)
+//    }
+//}
+//
+//infix fun Int.the(button: Int): Int {
+//    return button
+//}
+//
+//infix fun Int.recieves(press: State): Binding {
+//    return Binding(this).apply { state = press }
+//}
+//
+//infix fun Binding.run(baseCommand: BaseCommand): Binding {
+//    return this.apply { command = baseCommand }
+//}
+//
+//
+//infix fun Binding.and(list: MutableList<Binding>) {
+//    list.add(this)
+//}
 
-class ControllerBuilder {
-    var port: Int = 0
-    val exit: MutableList<Binding> = mutableListOf()
-    val once: Int = 0
-    fun build(): Controller {
-        return Controller(Joystick(port), exit)
-    }
-}
-
-infix fun Int.the(button: Int): Int {
-    return button
-}
-
-infix fun Int.recieves(press: State): Binding {
-    return Binding(this).apply { state = press }
-}
-
-infix fun Binding.run(baseCommand: BaseCommand): Binding {
-    return this.apply { command = baseCommand }
-}
-
-
-infix fun Binding.and(list: MutableList<Binding>) {
-    list.add(this)
-}
-
-fun controller(builder: ControllerBuilder.() -> Unit): Controller {
-    return ControllerBuilder().apply {
-        builder()
-    }.build()
-}
+//fun controller(builder: ControllerBuilder.() -> Unit): Controller {
+//    return ControllerBuilder().apply {
+//        builder()
+//    }.build()
+//}
