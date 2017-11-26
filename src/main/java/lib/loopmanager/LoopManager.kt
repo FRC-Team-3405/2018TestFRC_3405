@@ -1,4 +1,4 @@
-package frc.team3405.robot.lib.loopmanager
+package lib.loopmanager
 
 import kotlinx.coroutines.experimental.Job
 import kotlinx.coroutines.experimental.launch

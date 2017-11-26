@@ -1,5 +1,5 @@
-import frc.team3405.robot.lib.loopmanager.LifeCycleLoop
-import frc.team3405.robot.lib.loopmanager.LoopManager
+import lib.loopmanager.LifeCycleLoop
+import lib.loopmanager.LoopManager
 import org.junit.Assert
 import org.junit.Test
 

@@ -1,9 +1,7 @@
-package frc.team3405.robot.lib
+package lib
 
-import edu.wpi.first.wpilibj.IterativeRobot
 import edu.wpi.first.wpilibj.SampleRobot
-import edu.wpi.first.wpilibj.command.Scheduler
-import frc.team3405.robot.lib.loopmanager.LoopManager
+import lib.loopmanager.LoopManager
 
 /**
  * Created by ryanberger on 11/3/17.

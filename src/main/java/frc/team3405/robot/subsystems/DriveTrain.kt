@@ -2,11 +2,9 @@ package frc.team3405.robot.subsystems
 
 import com.ctre.MotorControl.CANTalon
 import frc.team3405.robot.OI
-import frc.team3405.robot.lib.BaseSubsystem
-import frc.team3405.robot.lib.Controller
-import frc.team3405.robot.lib.loopmanager.LifeCycleLoop
-import kotlinx.coroutines.experimental.async
-import kotlinx.coroutines.experimental.delay
+import frc.team3405.robot.controllers.XboxController
+import lib.BaseSubsystem
+import lib.loopmanager.LifeCycleLoop
 
 /**
  * Created by ryanberger on 11/11/17.
@@ -14,7 +12,7 @@ import kotlinx.coroutines.experimental.delay
 
 
 const val DEADZONE = .2
-object DriveTrain : BaseSubsystem("drivetrain") {
+object DriveTrain : BaseSubsystem() {
 
     private val frontRight: CANTalon = CANTalon(0)
     private val frontLeft: CANTalon = CANTalon(1)
@@ -24,12 +22,12 @@ object DriveTrain : BaseSubsystem("drivetrain") {
 
     override val loop: LifeCycleLoop = (object: LifeCycleLoop() {
         override val onTeleop: suspend () -> Unit = {
-
+            arcadeDrive(OI.pilotController)
         }
     })
 
 
-    private fun arcadeDrive(controller: Controller) {
+    private fun arcadeDrive(controller: XboxController) {
         val x = controller.leftX
         val y = controller.leftY
         val left: Double = (y + x) * maxOutput
