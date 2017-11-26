@@ -7,7 +7,13 @@ import kotlinx.coroutines.experimental.launch
  * Created by ryanberger on 11/25/17.
  */
 
-object LoopManager {
+class LoopManager {
+
+    companion object {
+        val INSTANCE: LoopManager by lazy { LoopManager() }
+    }
+
+
     // lifecycle loops
     private val lifeCycleLoops: MutableList<LifeCycleLoop> = mutableListOf()
     private val runningLifeCycleLoops: MutableList<Job> = mutableListOf()
@@ -26,8 +32,8 @@ object LoopManager {
 
     fun robotInit() {
         // start all of our lifecycle magic
-        runningInfiniteLoops += lifeCycleLoops.mapNotNull { it.robotInit }.map { launch { it() } }
-        runningInfiniteLoops += infiniteLoops.map { launch { it() } }
+        runningInfiniteLoops.addAll(lifeCycleLoops.mapNotNull { it.robotInit }.map { launch { it() } })
+        runningInfiniteLoops.addAll(infiniteLoops.map { launch { it() } })
     }
 
     fun startAutonomous() {
@@ -40,7 +46,9 @@ object LoopManager {
         runningLifeCycleLoops += lifeCycleLoops.mapNotNull { it.onTeleop }.map { launch { it() } }
     }
 
-    fun disrupt() {
+    fun disable () {}
 
-    }
+    // testing methods
+    fun lifeCycleLoopsLength() = runningLifeCycleLoops.size
+    fun infiniteLoopsLength() = runningInfiniteLoops.size
 }

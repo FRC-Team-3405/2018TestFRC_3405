@@ -12,7 +12,7 @@ abstract class BaseSubsystem(name: String): Subsystem(name) {
     abstract val loop: LifeCycleLoop
 
     init {
-        LoopManager.addLifeCycleLoop(loop)
+        LoopManager.INSTANCE.addLifeCycleLoop(loop)
     }
 
     override fun initDefaultCommand() {}
