@@ -8,6 +8,7 @@ class Robot : BaseRobot() {
     }
 
     override fun operatorControl() {
+        super.operatorControl()
         driveTrain = DriveTrain
     }
 }

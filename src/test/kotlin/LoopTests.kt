@@ -24,7 +24,15 @@ class LoopTests {
     }
 
     @Test
-    fun `loops run after init`() {
+    fun `infinite loops start on robotInit`() {
+        val loopManager = LoopManager()
+        loopManager.addInfiniteLoop {  }
+        loopManager.robotInit()
+        Assert.assertTrue(loopManager.infiniteLoopsLength() == 1)
+    }
+
+    @Test
+    fun `robotInit life cycle loops run forever`() {
         val loopManager = LoopManager()
         loopManager.addLifeCycleLoop((object: LifeCycleLoop() {
             override val robotInit: (suspend () -> Unit) = {}
@@ -32,5 +40,7 @@ class LoopTests {
         loopManager.robotInit()
         Assert.assertTrue(loopManager.infiniteLoopsLength() == 1)
     }
+
+
 }
 
