@@ -21,13 +21,13 @@ class LoopTests {
 
     @Test
     fun `no loops running`() {
-        assert(loopManager.infiniteLoopsLength() == 0)
+        assert(loopManager.runningInfiniteLoops.size == 0)
     }
 
     @Test
     fun `loops don't run yet`() {
         loopManager.addInfiniteLoop {  }
-        Assert.assertTrue(loopManager.infiniteLoopsLength() != 1)
+        Assert.assertTrue(loopManager.runningInfiniteLoops.size != 1)
     }
 
 
@@ -40,7 +40,19 @@ class LoopTests {
         }
         loopManager.robotInit()
         loopManager.startAutonomous()
-        Assert.assertTrue(loopManager.infiniteLoopsLength() == 1)
+        Assert.assertTrue(loopManager.runningInfiniteLoops.size == 1)
+    }
+
+    @Test
+    fun `init life cycle loop has nothing to do with robotInit`() {
+        loopManager.addLifeCycleLoop {
+            lifeCycleLoop {
+                init {  }
+            }
+        }
+
+        loopManager.startAutonomous()
+        Assert.assertTrue( loopManager.runningInfiniteLoops.size == 1)
     }
 
 }

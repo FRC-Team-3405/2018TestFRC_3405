@@ -18,10 +18,10 @@ class LoopRunningTests {
         loopManager.startTeleop()
         loopManager.addLifeCycleLoop {
             lifeCycleLoop {
-                teleop {}
+                teleop {  }
             }
         }
-        Assert.assertTrue(loopManager.lifeCycleLoopsLength() == 1)
+        Assert.assertTrue(loopManager.runningLifeCycleLoops.size == 1)
     }
 
     @Test
@@ -32,7 +32,19 @@ class LoopRunningTests {
                 autonomous {  }
             }
         }
-        Assert.assertTrue(loopManager.lifeCycleLoopsLength() == 1)
+        Assert.assertTrue(loopManager.runningLifeCycleLoops.size == 1)
+    }
+
+    @Test
+    fun `init loop added after runs forever`() {
+        loopManager.addLifeCycleLoop {
+            lifeCycleLoop {
+                init {  }
+            }
+        }
+        loopManager.robotInit()
+        loopManager.startTeleop()
+        Assert.assertTrue("Size: ${loopManager.runningInfiniteLoops.size}", loopManager.runningInfiniteLoops.size == 1)
     }
 
 }

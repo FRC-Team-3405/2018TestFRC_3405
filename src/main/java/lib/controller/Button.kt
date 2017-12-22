@@ -11,6 +11,7 @@ import kotlinx.coroutines.experimental.launch
 class Button(val joystick: Joystick) {
 
     private val bindings: MutableList<Binding> = mutableListOf()
+
     fun bind(binding: Binding) {
         bindings.add(binding)
         when (binding.state) {

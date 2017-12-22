@@ -8,47 +8,87 @@ import kotlinx.coroutines.experimental.launch
  * Created by ryanberger on 11/25/17.
  */
 
+/**
+ * LoopManager
+ *
+ * Uses singleton pattern to provide only one instance to the application
+ * We use this instead of an object because it is easier to setup and tear
+ * down for testing.
+ *
+ * This class should handle any permutation of state in the robot.
+ * The ideal robot state goes as follows:
+ *
+ * robotInit -> onAutonomous -> onTeleop
+ *
+ * We cannot guarantee this. It is possible for robot testing purposes, that you switch
+ * between autonomous and teleop multiple times. You also must deal with the disable state
+ * which can be an E-stop or the FRC making sure that you don't.
+ *
+ * The following happens at each lifecycle state:
+ *
+ * @robotInit -> Make sure that we set our inner state machine. Also, start up all of our
+ * infinite loops. This "should" only happen once; Unless you have exceptions thrown in your
+ * code
+ *
+ * @onAutonomous -> stop all previous lifecycle loops and start the autonomous ones. Make sure appropriate
+ * infinite loops are running
+ *
+ * @onTeleop -> stop all previous lifecycle loops and start the teleop ones. Make sure appropriate infinite
+ * loops are running
+ *
+ * @disable -> stop all loops.
+ *
+ * TODO: Either all infinite loops are running, or they all aren't. Make sure that happens
+ */
+
+
 class LoopManager {
     private var state: LifeCycleState = LifeCycleState.Disable()
 
     companion object {
-        private var instance: LoopManager? = null
-
-        val INSTANCE: LoopManager
-        get() {
-            if(instance == null) {
-                instance = LoopManager()
-            }
-            return instance!!
-        }
+        val INSTANCE: LoopManager by lazy { LoopManager() }
     }
 
 
     // lifecycle loops
-    private val lifeCycleLoops: MutableList<LifeCycleLoop> = mutableListOf()
-    private val runningLifeCycleLoops: MutableList<Job> = mutableListOf()
+    val lifeCycleLoops: MutableList<LifeCycleLoop> = mutableListOf()
+    val runningLifeCycleLoops: MutableList<Job> = mutableListOf()
 
     // everything that is always running
-    private val infiniteLoops: MutableList<Loop> = mutableListOf()
-    private val runningInfiniteLoops: MutableList<Job> = mutableListOf()
+    val infiniteLoops: MutableList<Loop> = mutableListOf()
+    val runningInfiniteLoops: MutableList<Job> = mutableListOf()
 
+    /**
+     * @method addLifeCycleLoop
+     * add a loop to be managed by the lifecycle engine
+     *
+     * @param makeLoop
+     * lambda that will return a nullable lifecycle loop.
+     * We might want to change this later, so that we don't
+     * have to use lifeCycleLoop { } inside of another lambda
+     * */
     fun addLifeCycleLoop(makeLoop: (() -> LifeCycleLoop?)) {
+
+        // get our lifecycle loop
         val functionValue = makeLoop()
 
         functionValue?.let { loop ->
+            /**
+             * This ensures that if there is a race condition between
+             * a state being set and a call to addLifeCycleLoop we don't accidentally
+             * not run a lifecycle loop
+             */
             when(state) {
                 is LifeCycleState.Teleop -> {
-                    runningLifeCycleLoops.add(launch { loop.onTeleop?.invoke() })
+                    loop.onTeleop?.let { runningLifeCycleLoops.add(launch { it() }) }
                 }
                 is LifeCycleState.Autonomous -> {
-                    runningLifeCycleLoops.add(launch { loop.onAutonomous?.invoke() })
-
-                }
-                is LifeCycleState.Init -> {
-                    runningLifeCycleLoops.add(launch { loop.robotInit?.invoke() })
+                    loop.onAutonomous?.let { runningLifeCycleLoops.add(launch { it() }) }
                 }
             }
-
+            // TODO make this call smarter. We should only do this when we have changed state once (don't do it before the robot has started)
+            // the robot runs init as an infinite loop
+            loop.robotInit?.let { runningInfiniteLoops.add(launch { it() }) }
             lifeCycleLoops.add(loop)
         }
     }
@@ -58,25 +98,19 @@ class LoopManager {
     }
 
     fun robotInit() {
-        // start all of our lifecycle magic
         state = LifeCycleState.Init()
-        lifeCycleLoops
-                .mapNotNull { it.robotInit }
-                .forEach { runningInfiniteLoops.add(launch { it() }) }
-
         infiniteLoops.forEach { launch { it() } }
-        println("Launched all of them")
     }
 
     fun startAutonomous() {
         state = LifeCycleState.Autonomous()
+        stopLifeCycleLoops()
         runningLifeCycleLoops += lifeCycleLoops.mapNotNull { it.onAutonomous }.map { launch { it() } }
     }
 
     fun startTeleop() {
         state = LifeCycleState.Teleop()
-        runningLifeCycleLoops.forEach { it.cancel() }
-        runningLifeCycleLoops.removeAll { true }
+        stopLifeCycleLoops()
         runningLifeCycleLoops += lifeCycleLoops.mapNotNull { it.onTeleop }.map { launch { it() } }
     }
 
@@ -88,9 +122,9 @@ class LoopManager {
         runningLifeCycleLoops.removeAll { true }
     }
 
-    fun stopAllLoops() {}
+    fun stopLifeCycleLoops() {
+        runningLifeCycleLoops.forEach { it.cancel() }
+        runningLifeCycleLoops.removeAll { true }
+    }
 
-    // testing methods
-    fun lifeCycleLoopsLength() = runningLifeCycleLoops.size
-    fun infiniteLoopsLength() = runningInfiniteLoops.size
 }
