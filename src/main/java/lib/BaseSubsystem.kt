@@ -9,8 +9,11 @@ import lib.loopmanager.LoopManager
  */
 
 abstract class BaseSubsystem: Subsystem() {
-    open val loop: LifeCycleLoop? = null
-    init { loop?.let { LoopManager.INSTANCE.addLifeCycleLoop(it) } }
+    protected var loop: LifeCycleLoop? = null
+    set(value) {
+        loop?.let { LoopManager.INSTANCE.addLifeCycleLoop { value } }
+        field = value
+    }
 
     override fun initDefaultCommand() {}
 }

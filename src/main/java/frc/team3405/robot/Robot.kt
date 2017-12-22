@@ -1,14 +1,10 @@
 package frc.team3405.robot
 import frc.team3405.robot.subsystems.DriveTrain
 import lib.BaseRobot
+import lib.loopmanager.LoopManager
 
 class Robot : BaseRobot() {
-    companion object {
-        lateinit var driveTrain: DriveTrain
-    }
+    lateinit var driveTrain: DriveTrain
+    override fun operatorControl() { driveTrain = DriveTrain }
 
-    override fun operatorControl() {
-        super.operatorControl()
-        driveTrain = DriveTrain
-    }
 }

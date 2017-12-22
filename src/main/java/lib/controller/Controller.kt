@@ -7,12 +7,11 @@ import edu.wpi.first.wpilibj.Joystick
  */
 
 enum class State {
-    ACTIVE,
-    INACTIVE,
-    PRESSED,
-    RELEASED,
-    TOGGLE_PRESSED
+    HELD,
+    TOGGLED
 }
+
+typealias Action = suspend () -> Unit
 
 // We will need a base controller that will allow us to create the bindings,
 // and control all of our co-routines
@@ -21,30 +20,30 @@ enum class State {
 // maintain a minimal abstraction of our controller
 
 
-open class Controller(port: Int, bindings: List<Binding>) {
-    protected val joystick: Joystick = Joystick(port)
+open class Controller(val joystick: Joystick, bindings: List<Binding>) {
 
-    init { bind(bindings) }
+//    init { bind(bindings) }
 
-    private fun bind(bindings: List<Binding>) {
-        for (binding in bindings) {
-            // Get the port number
-
-        }
-    }
+//    private fun bind(bindings: List<Binding>) {
+//        for (binding in bindings) {
+//            // Get the port number
+//            Button(joystick).apply { bind(binding) }
+//        }
+//    }
 }
 
 
-data class Binding(val buttonPort: Int) {
-    lateinit var function: suspend () -> Unit
+data class Binding(val mapping: Int) {
+    lateinit var action: Action
     lateinit var state: State
 }
-class ControllerBuilder<out T: Controller> {
-    var port: Int = 0
-    private val exit: MutableList<Binding> = mutableListOf()
-    fun build(): T = Controller(port, exit) as T
-}
+
 infix fun Int.recieves(press: State): Binding = Binding(this).apply { state = press }
-infix fun Binding.run(command: suspend () -> Unit): Binding = this.apply { function = command }
+infix fun Binding.run(action: Action): Binding = this.apply { this.action = action }
 infix fun Binding.then(list: MutableList<Binding>) { list.add(this) }
-inline fun <reified T: Controller> controller(builder: ControllerBuilder<T>.() -> Unit): T = ControllerBuilder<T>().apply { builder() }.build()
+
+class BindingBuilder {
+    val end: MutableList<Binding> = mutableListOf()
+    fun finish(): MutableList<Binding> = end
+}
+

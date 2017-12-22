@@ -1,6 +1,8 @@
 package frc.team3405.robot.controllers
 
+import edu.wpi.first.wpilibj.Joystick
 import lib.controller.Binding
+import lib.controller.BindingBuilder
 import lib.controller.Controller
 import lib.maps.Xbox
 
@@ -8,7 +10,7 @@ import lib.maps.Xbox
  * Created by ryanberger on 11/25/17.
  */
 
-class XboxController(port: Int, bindings: List<Binding>) : Controller(port, bindings) {
+class XboxController(joystick: Joystick, bindings: List<Binding>) : Controller(joystick, bindings) {
     val rightX
         get() = joystick.getRawAxis(Xbox.RightX)
 
@@ -21,3 +23,6 @@ class XboxController(port: Int, bindings: List<Binding>) : Controller(port, bind
     val leftY
         get() = joystick.getRawAxis(Xbox.LeftY)
 }
+
+fun xboxController(port: Int, builder: BindingBuilder.() -> Unit): XboxController =
+        XboxController(Joystick(port), BindingBuilder().apply { builder() }.finish())

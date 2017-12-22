@@ -1,6 +1,8 @@
 import lib.loopmanager.LifeCycleLoop
 import lib.loopmanager.LoopManager
+import lib.loopmanager.lifeCycleLoop
 import org.junit.Assert
+import org.junit.Before
 import org.junit.Test
 
 
@@ -10,37 +12,36 @@ import org.junit.Test
 
 
 class LoopTests {
+    lateinit var loopManager: LoopManager
+
+    @Before
+    fun setup() {
+        loopManager = LoopManager()
+    }
+
     @Test
     fun `no loops running`() {
-        val loopManager = LoopManager()
         assert(loopManager.infiniteLoopsLength() == 0)
     }
 
     @Test
     fun `loops don't run yet`() {
-        val loopManager = LoopManager()
         loopManager.addInfiniteLoop {  }
         Assert.assertTrue(loopManager.infiniteLoopsLength() != 1)
     }
 
-    @Test
-    fun `infinite loops start on robotInit`() {
-        val loopManager = LoopManager()
-        loopManager.addInfiniteLoop {  }
-        loopManager.robotInit()
-        Assert.assertTrue(loopManager.infiniteLoopsLength() == 1)
-    }
 
     @Test
     fun `robotInit life cycle loops run forever`() {
-        val loopManager = LoopManager()
-        loopManager.addLifeCycleLoop((object: LifeCycleLoop() {
-            override val robotInit: (suspend () -> Unit) = {}
-        }))
+        loopManager.addLifeCycleLoop {
+            lifeCycleLoop {
+                init {  }
+            }
+        }
         loopManager.robotInit()
+        loopManager.startAutonomous()
         Assert.assertTrue(loopManager.infiniteLoopsLength() == 1)
     }
-
 
 }
 
