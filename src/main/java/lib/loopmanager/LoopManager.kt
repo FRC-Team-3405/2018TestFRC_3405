@@ -86,9 +86,10 @@ class LoopManager {
                     loop.onAutonomous?.let { runningLifeCycleLoops.add(launch { it() }) }
                 }
             }
-            // TODO make this call smarter. We should only do this when we have changed state once (don't do it before the robot has started)
+
             // the robot runs init as an infinite loop
-            loop.robotInit?.let { runningInfiniteLoops.add(launch { it() }) }
+            if (state !is LifeCycleState.Disable)
+                loop.robotInit?.let { runningInfiniteLoops.add(launch { it() }) }
             lifeCycleLoops.add(loop)
         }
     }
@@ -105,26 +106,38 @@ class LoopManager {
     fun startAutonomous() {
         state = LifeCycleState.Autonomous()
         stopLifeCycleLoops()
+        checkInfiniteLoops()
         runningLifeCycleLoops += lifeCycleLoops.mapNotNull { it.onAutonomous }.map { launch { it() } }
     }
 
     fun startTeleop() {
         state = LifeCycleState.Teleop()
         stopLifeCycleLoops()
+        checkInfiniteLoops()
         runningLifeCycleLoops += lifeCycleLoops.mapNotNull { it.onTeleop }.map { launch { it() } }
     }
 
     fun disable () {
         state = LifeCycleState.Disable()
+        stopInfiniteLoops()
+        stopLifeCycleLoops()
+    }
+
+    private fun stopInfiniteLoops() {
         runningInfiniteLoops.forEach { it.cancel() }
-        runningLifeCycleLoops.forEach { it.cancel() }
         runningInfiniteLoops.removeAll { true }
+    }
+
+    private fun stopLifeCycleLoops() {
+        runningLifeCycleLoops.forEach { it.cancel() }
         runningLifeCycleLoops.removeAll { true }
     }
 
-    fun stopLifeCycleLoops() {
-        runningLifeCycleLoops.forEach { it.cancel() }
-        runningLifeCycleLoops.removeAll { true }
+    private fun checkInfiniteLoops() {
+        if (runningInfiniteLoops.size != (infiniteLoops.size + lifeCycleLoops.filter { it.robotInit != null }.size)) {
+            infiniteLoops.forEach { runningInfiniteLoops.add(launch { it() })}
+            lifeCycleLoops.filter { it.robotInit != null}.forEach { runningInfiniteLoops.add(launch { it.robotInit?.invoke() }) }
+        }
     }
 
 }
