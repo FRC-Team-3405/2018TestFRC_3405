@@ -28,7 +28,7 @@ object DriveTrain : BaseSubsystem() {
         loop = lifeCycleLoop {
             teleop {
                 while (true) {
-                    arcadeDrive(1.0, 1.0)
+                   arcadeDrive(OI.controller.leftX, OI.controller.leftY)
                 }
             }
         }

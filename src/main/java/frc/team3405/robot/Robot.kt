@@ -5,6 +5,7 @@ import lib.loopmanager.LoopManager
 
 class Robot : BaseRobot() {
     lateinit var driveTrain: DriveTrain
-    override fun operatorControl() { driveTrain = DriveTrain }
-
+    override fun robotInit() {
+        driveTrain = DriveTrain
+    }
 }

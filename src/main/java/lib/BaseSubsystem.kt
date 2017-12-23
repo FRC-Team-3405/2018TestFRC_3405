@@ -11,7 +11,7 @@ import lib.loopmanager.LoopManager
 abstract class BaseSubsystem: Subsystem() {
     protected var loop: LifeCycleLoop? = null
     set(value) {
-        loop?.let { LoopManager.INSTANCE.addLifeCycleLoop { value } }
+        loop.let { LoopManager.INSTANCE.addLifeCycleLoop { value } }
         field = value
     }
 
