@@ -1,6 +1,7 @@
 package frc.team3405.robot.subsystems
 
 import com.ctre.MotorControl.CANTalon
+import edu.wpi.first.wpilibj.Talon
 import frc.team3405.robot.OI
 import frc.team3405.robot.controllers.XboxController
 import kotlinx.coroutines.experimental.async
@@ -18,15 +19,15 @@ import lib.loopmanager.lifeCycleLoop
 const val DEADZONE = .2
 object DriveTrain : BaseSubsystem() {
 
-    private val frontRight: CANTalon = CANTalon(0)
-    private val frontLeft: CANTalon = CANTalon(1)
-    private val backLeft: CANTalon = CANTalon(2)
-    private val backRight: CANTalon = CANTalon(3)
-    const private val maxOutput = 1
+    private val frontRight: Talon = Talon(0)
+    private val frontLeft: Talon = Talon(1)
+    private val backLeft: Talon = Talon(2)
+    private val backRight: Talon = Talon(3)
+    private const val maxOutput = 1
 
     init {
         loop = lifeCycleLoop {
-            teleop {
+            init {
                 while (true) {
                    arcadeDrive(OI.controller.leftX, OI.controller.leftY)
                 }
@@ -53,9 +54,9 @@ object DriveTrain : BaseSubsystem() {
         val right: Double = (y - x) * maxOutput
 
         frontRight.set(right)
-        backRight.set(-right)
+        backRight.set(right)
 
         frontLeft.set(-left)
-        backLeft.set(left)
+        backLeft.set(-left)
     }
 }

@@ -11,6 +11,7 @@ enum class State {
     TOGGLED
 }
 
+
 typealias Action = suspend () -> Unit
 
 // We will need a base controller that will allow us to create the bindings,
@@ -22,28 +23,22 @@ typealias Action = suspend () -> Unit
 
 open class Controller(val joystick: Joystick, bindings: List<Binding>) {
 
-//    init { bind(bindings) }
+    init { bind(bindings) }
 
-//    private fun bind(bindings: List<Binding>) {
-//        for (binding in bindings) {
-//            // Get the port number
-//            Button(joystick).apply { bind(binding) }
-//        }
-//    }
+    private fun bind(bindings: List<Binding>) {
+        for (binding in bindings) {
+            // Get the port number
+            Button(joystick).apply { bind(binding) }
+        }
+    }
 }
 
 
-data class Binding(val mapping: Int) {
-    lateinit var action: Action
-    lateinit var state: State
-}
-
-infix fun Int.recieves(press: State): Binding = Binding(this).apply { state = press }
-infix fun Binding.run(action: Action): Binding = this.apply { this.action = action }
-infix fun Binding.then(list: MutableList<Binding>) { list.add(this) }
+data class Binding(val mapping: Int, val state: State, val action: Action)
 
 class BindingBuilder {
-    val end: MutableList<Binding> = mutableListOf()
-    fun finish(): MutableList<Binding> = end
+    private val bindings: MutableList<Binding> = mutableListOf()
+    fun bind(port: Int, state: State, action: Action) { bindings.add(Binding(port, state, action)) }
+    fun build() = bindings
 }
 
