@@ -1,18 +1,5 @@
-import com.nhaarman.mockito_kotlin.doAnswer
-import com.nhaarman.mockito_kotlin.doReturn
-import com.nhaarman.mockito_kotlin.mock
-import edu.wpi.first.wpilibj.Joystick
-import frc.team3405.robot.controllers.XboxController
-import frc.team3405.robot.controllers.xboxController
-import junit.framework.Assert.assertFalse
-import junit.framework.Assert.assertTrue
-import kotlinx.coroutines.experimental.delay
-import kotlinx.coroutines.experimental.runBlocking
-import lib.controller.State
-import lib.maps.Xbox
 import org.junit.Before
 import org.junit.Test
-import java.util.concurrent.TimeUnit
 
 class ControllerTests {
     var timesExecuted: Int = 0

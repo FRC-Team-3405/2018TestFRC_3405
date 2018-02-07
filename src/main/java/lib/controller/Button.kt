@@ -2,6 +2,9 @@ package lib.controller
 
 import edu.wpi.first.wpilibj.Joystick
 import edu.wpi.first.wpilibj.buttons.JoystickButton
+import edu.wpi.first.wpilibj.command.Command
+import kotlinx.coroutines.experimental.Job
+import kotlinx.coroutines.experimental.async
 import kotlinx.coroutines.experimental.launch
 
 /**
@@ -15,36 +18,16 @@ class Button(val joystick: Joystick) {
     fun bind(binding: Binding) {
         bindings.add(binding)
         when (binding.state) {
-            State.HELD -> held(binding.mapping, binding.action)
-            State.TOGGLED -> toggled(binding.mapping, binding.action)
-        }
-    }
-
-    private fun held(mapping: Int, action: Action) {
-        launch {
-            val button = JoystickButton(joystick, mapping)
-            while (true) {
-                if (button.get()) {
-                    launch { action() }
-                }
-            }
-        }
-    }
-
-    private fun toggled(mapping: Int, action: Action) {
-        launch {
-            val button = JoystickButton(joystick, mapping)
-            var lock = false
-            while (true) {
-                if (button.get()) {
-                    lock = true
-                } else {
-                    if (lock) {
-                        lock = false
-                        launch { action() }
+            State.HELD -> JoystickButton(joystick, binding.mapping).apply {
+                whileHeld(object: Command (){
+                    override fun execute() {
+                        print("Hllo")
+                        launch { binding.action() }
                     }
-                }
+                    override fun isFinished(): Boolean = true
+                })
             }
+//            State.TOGGLED -> toggled(binding.mapping, binding.action)action
         }
     }
 }

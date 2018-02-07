@@ -1,15 +1,9 @@
 package frc.team3405.robot.subsystems
 
-import com.ctre.MotorControl.CANTalon
 import edu.wpi.first.wpilibj.Talon
-import frc.team3405.robot.OI
+import edu.wpi.first.wpilibj.command.Subsystem
+import frc.team3405.robot.DriveCommand
 import frc.team3405.robot.controllers.XboxController
-import kotlinx.coroutines.experimental.async
-import kotlinx.coroutines.experimental.delay
-import lib.BaseSubsystem
-import lib.loopmanager.LifeCycleLoop
-import lib.loopmanager.LoopManager
-import lib.loopmanager.lifeCycleLoop
 
 /**
  * Created by ryanberger on 11/11/17.
@@ -17,39 +11,24 @@ import lib.loopmanager.lifeCycleLoop
 
 
 const val DEADZONE = .2
-object DriveTrain : BaseSubsystem() {
+
+class DriveTrain : Subsystem() {
+    override fun initDefaultCommand() { DriveCommand() }
 
     private val frontRight: Talon = Talon(0)
     private val frontLeft: Talon = Talon(1)
     private val backLeft: Talon = Talon(2)
     private val backRight: Talon = Talon(3)
-    private const val maxOutput = 1
 
     init {
-        loop = lifeCycleLoop {
-            init {
-                while (true) {
-                   arcadeDrive(OI.controller.leftX, OI.controller.leftY)
-                }
-            }
-        }
+        arcadeDrive(0.0, -1.0)
+        arcadeDrive(0.0, 0.0)
     }
 
 
-    fun arcadeDrive(controller: XboxController) {
+    fun arcadeDrive(controller: XboxController, maxOutput: Double = 1.0) {
         val x = controller.leftX
         val y = controller.leftY
-        val left: Double = (y + x) * maxOutput
-        val right: Double = (y - x) * maxOutput
-
-        frontRight.set(right)
-        backRight.set(-right)
-
-        frontLeft.set(-left)
-        backLeft.set(left)
-    }
-
-    fun arcadeDrive(x: Double, y: Double) {
         val left: Double = (y + x) * maxOutput
         val right: Double = (y - x) * maxOutput
 
@@ -58,5 +37,24 @@ object DriveTrain : BaseSubsystem() {
 
         frontLeft.set(-left)
         backLeft.set(-left)
+    }
+
+    fun arcadeDrive(x: Double, y: Double, maxOutput: Double = 1.0) {
+        val left: Double = (y - x) * maxOutput
+        val right: Double = (y + x) * maxOutput
+
+        frontRight.set(right)
+        backRight.set(right)
+
+        frontLeft.set(-left)
+        backLeft.set(-left)
+    }
+
+    fun tankDrive(left: Double, right: Double, maxOutput: Double = 1.0) {
+        frontRight.set(right * maxOutput)
+        backRight.set(right * maxOutput)
+
+        frontLeft.set(-left * maxOutput)
+        backLeft.set(-left * maxOutput)
     }
 }

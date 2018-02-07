@@ -21,16 +21,8 @@ typealias Action = suspend () -> Unit
 // maintain a minimal abstraction of our controller
 
 
-open class Controller(val joystick: Joystick, bindings: List<Binding>) {
+open class Controller(val joystick: Joystick) {
 
-    init { bind(bindings) }
-
-    private fun bind(bindings: List<Binding>) {
-        for (binding in bindings) {
-            // Get the port number
-            Button(joystick).apply { bind(binding) }
-        }
-    }
 }
 
 
