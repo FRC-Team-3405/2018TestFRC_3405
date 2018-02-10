@@ -25,4 +25,7 @@ class XboxController(joystick: Joystick, bindings: List<Binding>) : Controller(j
 }
 
 fun xboxController(port: Int, builder: BindingBuilder.() -> Unit): XboxController =
-        XboxController(Joystick(port), BindingBuilder().apply { builder() }.finish())
+        XboxController(Joystick(port), BindingBuilder().apply { builder() }.build())
+
+fun xboxController(joystick: Joystick, bindingBuilder: BindingBuilder.() -> Unit) =
+        XboxController(joystick, BindingBuilder().apply { bindingBuilder() }.build())

@@ -31,10 +31,10 @@ class Button(val joystick: Joystick) {
         }
     }
 
-    fun toggled(mapping: Int, action: Action) {
+    private fun toggled(mapping: Int, action: Action) {
         launch {
             val button = JoystickButton(joystick, mapping)
-            var lock: Boolean = false
+            var lock = false
             while (true) {
                 if (button.get()) {
                     lock = true
