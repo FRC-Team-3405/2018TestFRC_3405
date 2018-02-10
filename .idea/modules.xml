@@ -2,6 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/59485-ShibeBot.iml" filepath="$PROJECT_DIR$/.idea/modules/59485-ShibeBot.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/ShibeBot.iml" filepath="$PROJECT_DIR$/.idea/modules/ShibeBot.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/ShibeBot_main.iml" filepath="$PROJECT_DIR$/.idea/modules/ShibeBot_main.iml" group="ShibeBot" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/ShibeBot_test.iml" filepath="$PROJECT_DIR$/.idea/modules/ShibeBot_test.iml" group="ShibeBot" />

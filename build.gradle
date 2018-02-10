@@ -70,7 +70,6 @@ task wrapper(type: Wrapper) {
 
 task customBuild(type: Exec) {
     commandLine './gradlew'
-    args ['build']
 }
 
 kotlin { experimental { coroutines 'enable' } }
